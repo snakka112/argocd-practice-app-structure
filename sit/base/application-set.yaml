@@ -2,35 +2,28 @@
 apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 metadata:
-  name: acm-git-matrix-deploy
-  namespace: argocd
+  name: siva-argocd-application-set
+  namespace: openshift-gitops
 spec:
   goTemplate: true
+  goTemplateOptions: ["missingkey=error"]
   generators:
-    - matrix:
-        generators:
-          - git:
-              repoURL: https://github.com/loopandloop/argosync-wave.git
-              revision: HEAD
-              directories:
-                - path: structure/base/prod-cluster-01/*
-          - clusterDecisionResource:
-              configMapRef: acm-placement
-              labelSelector:
-                matchLabels:
-                  cluster.open-cluster-management.io/placement: my-app-placement
-              requeueAfterSeconds: 180
+      - git:
+          repoURL: https://github.com/snakka112/argocd-practice-app-structure.git
+          revision: HEAD
+          directories:
+            - path: sit/base/*
   template:
     metadata:
-      name: '{{.path.basename}}-{{.clusterName}}'
+      name: '{{.path.basename}}-sit'
     spec:
       project: default
       source:
-        repoURL: https://github.com/loopandloop/argosync-wave.git
+        repoURL: https://github.com/snakka112/argocd-practice-app-structure.git
         targetRevision: HEAD
         path: '{{.path.path}}'
       destination:
-        name: '{{.clusterName}}'
+        name: https://kubernetes.default.svc
         namespace: '{{.path.basename}}'
       syncPolicy:
         automated:
