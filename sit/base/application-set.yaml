@@ -1,0 +1,41 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: acm-git-matrix-deploy
+  namespace: argocd
+spec:
+  goTemplate: true
+  generators:
+    - matrix:
+        generators:
+          - git:
+              repoURL: https://github.com/loopandloop/argosync-wave.git
+              revision: HEAD
+              directories:
+                - path: structure/base/prod-cluster-01/*
+          - clusterDecisionResource:
+              configMapRef: acm-placement
+              labelSelector:
+                matchLabels:
+                  cluster.open-cluster-management.io/placement: my-app-placement
+              requeueAfterSeconds: 180
+  template:
+    metadata:
+      name: '{{.path.basename}}-{{.clusterName}}'
+    spec:
+      project: default
+      source:
+        repoURL: https://github.com/loopandloop/argosync-wave.git
+        targetRevision: HEAD
+        path: '{{.path.path}}'
+      destination:
+        name: '{{.clusterName}}'
+        namespace: '{{.path.basename}}'
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+          - CreateNamespace=true
+---

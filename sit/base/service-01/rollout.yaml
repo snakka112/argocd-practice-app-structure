@@ -1,0 +1,27 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
+metadata:
+  name: service1
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: service1
+  template:
+    metadata:
+      labels:
+        app: service1
+    spec:
+      containers:
+      - name: service1
+        image: quay.io/balagokulkuberox/argo-rollout-service1:v2
+        ports:
+        - containerPort: 8000
+        env:
+        - name: VERSION
+          value: "New Version at 8:21PM KSA"
+  strategy:
+    blueGreen:
+      activeService: service1
+      previewService: service1-preview
+      autoPromotionEnabled: false # Manual promotion for better control
