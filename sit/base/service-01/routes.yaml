@@ -4,25 +4,11 @@ kind: Route
 metadata:
   name: service1
 spec:
-  host: service1.apps.cluster-52kt5.dynamic.redhatworkshops.io
+  host: service1.cluster-8gzvm.dyn.redhatworkshops.io
   tls:
     termination: edge
   to:
     kind: Service
     name: service1
-    weight: 100
-  wildcardPolicy: None
----
-apiVersion: route.openshift.io/v1
-kind: Route
-metadata:
-  name: service1-preview
-spec:
-  host: service1-preview.apps.cluster-52kt5.dynamic.redhatworkshops.io
-  tls:
-    termination: edge
-  to:
-    kind: Service
-    name: service1-preview
     weight: 100
   wildcardPolicy: None

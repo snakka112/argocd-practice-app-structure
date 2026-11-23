@@ -23,5 +23,4 @@ spec:
   strategy:
     blueGreen:
       activeService: service1
-      previewService: service1-preview
       autoPromotionEnabled: false # Manual promotion for better control
